@@ -12,10 +12,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY
 SECRET_KEY = 'django-insecure-0sxs$dd28hwt1gn3k($yagbe12=(ch_tzw-@+*%1z7_92ec6&_'
 
-DEBUG = True   # Change to False after deployment
+# ⚠️ For local development. On PythonAnywhere, set DEBUG=False.
+DEBUG = True   
 
 ALLOWED_HOSTS = [
-    "shaadhi.pythonanywhere.com",  # backend domain
+    "shaadhi.pythonanywhere.com",       # backend domain (PythonAnywhere)
+    "digitalmagazine.vercel.app",       # frontend domain
     "localhost",
     "127.0.0.1"
 ]
@@ -48,19 +50,27 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# CORS Settings
+# -------------------------------
+# CORS & CSRF SETTINGS
+# -------------------------------
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://digitalmagazine.vercel.app",  # FIXED (no slash)
+    "https://digitalmagazine.vercel.app",
 ]
 
-# CSRF Settings
 CSRF_TRUSTED_ORIGINS = [
-    "https://digitalmagazine.vercel.app",  # FIXED (no slash)
+    "https://digitalmagazine.vercel.app",
+    "https://shaadhi.pythonanywhere.com",
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
+# -------------------------------
 # REST FRAMEWORK / JWT
+# -------------------------------
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -75,7 +85,10 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
-# URLS & TEMPLATES
+# -------------------------------
+# URLS & Templates
+# -------------------------------
+
 ROOT_URLCONF = 'jamia_backend.urls'
 
 TEMPLATES = [
@@ -95,7 +108,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'jamia_backend.wsgi.application'
 
-# SQLite Database
+# -------------------------------
+# DATABASE (SQLite)
+# -------------------------------
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -103,7 +119,10 @@ DATABASES = {
     }
 }
 
+# -------------------------------
 # Password Validation
+# -------------------------------
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -111,20 +130,23 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# -------------------------------
 # Internationalization
+# -------------------------------
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static & Media (Required for PythonAnywhere)
+# -------------------------------
+# STATIC & MEDIA (PythonAnywhere)
+# -------------------------------
+
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / "staticfiles"   # REQUIRED
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
