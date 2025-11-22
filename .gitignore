@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.egg-info/
+*.egg
+
+# Virtual env
+venv/
+env/
+.venv/
+ENV/
+.VENv/
+
+# IDEs
+.vscode/
+.idea/
+
+# Django stuff
+*.log
+*.pot
+*.pyc
+db.sqlite3
+media/
+staticfiles/
+node_modules/
+
+# Environment / secrets
+.env
+.env.local
+secrets.json
+
+# macOS
+.DS_Store
+
+# misc
+*.sqlite3
+*.ipynb_checkpoints
