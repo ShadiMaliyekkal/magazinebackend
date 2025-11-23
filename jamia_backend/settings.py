@@ -9,50 +9,149 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+# -------------------------------------------------------------------
 # SECURITY
+# -------------------------------------------------------------------
+
 SECRET_KEY = 'django-insecure-0sxs$dd28hwt1gn3k($yagbe12=(ch_tzw-@+*%1z7_92ec6&_'
 
-# ⚠️ For local development. On PythonAnywhere, set DEBUG=False.
-DEBUG = True   
+# IMPORTANT: Production must be DEBUG = False
+# Use DEBUG = True only when developing locally (not on PythonAnywhere)
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    "shaadhi.pythonanywhere.com",       # backend domain (PythonAnywhere)
-    "digitalmagazine.vercel.app",       # frontend domain
+    "shaadhi.pythonanywhere.com",
+    "digitalmagazine.vercel.app",
+    "127.0.0.1",
     "localhost",
-    "127.0.0.1"
 ]
 
-# Installed apps
+
+# -------------------------------------------------------------------
+# APPS
+# -------------------------------------------------------------------
+
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
 
-    'rest_framework',
-    'rest_framework_simplejwt',
-    'corsheaders',
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "corsheaders",
 
-    'magazine',
+    "magazine",
 ]
 
-# Middleware
+
+# -------------------------------------------------------------------
+# MIDDLEWARE
+# -------------------------------------------------------------------
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",   # must be high in the list
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# -------------------------------
-# CORS & CSRF SETTINGS
-# -------------------------------
+
+ROOT_URLCONF = "jamia_backend.urls"
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = "jamia_backend.wsgi.application"
+
+
+# -------------------------------------------------------------------
+# DATABASE
+# -------------------------------------------------------------------
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
+
+
+# -------------------------------------------------------------------
+# PASSWORD VALIDATION
+# -------------------------------------------------------------------
+
+AUTH_PASSWORD_VALIDATORS = [
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+]
+
+
+# -------------------------------------------------------------------
+# INTERNATIONALIZATION
+# -------------------------------------------------------------------
+
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_TZ = True
+
+
+# -------------------------------------------------------------------
+# STATIC & MEDIA
+# -------------------------------------------------------------------
+
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# -------------------------------------------------------------------
+# DRF & JWT
+# -------------------------------------------------------------------
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+    ),
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+}
+
+
+# -------------------------------------------------------------------
+# CORS & CSRF
+# -------------------------------------------------------------------
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
@@ -67,86 +166,43 @@ CSRF_TRUSTED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-# -------------------------------
-# REST FRAMEWORK / JWT
-# -------------------------------
+# Additional CORS headers to allow/expose (helps browsers)
+CORS_ALLOW_HEADERS = [
+    "authorization",
+    "content-type",
+    "x-csrftoken",
+]
 
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
-    "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
-    ),
-}
+CORS_EXPOSE_HEADERS = ["Content-Type", "Authorization"]
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-}
 
-# -------------------------------
-# URLS & Templates
-# -------------------------------
+# -------------------------------------------------------------------
+# SECURITY FOR PYTHONANYWHERE
+# -------------------------------------------------------------------
 
-ROOT_URLCONF = 'jamia_backend.urls'
+# PythonAnywhere terminates HTTPS at a proxy, so tell Django the original scheme
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
+# Use secure cookies in production
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# These may be enabled later if you want strict redirect to HTTPS
+# SECURE_SSL_REDIRECT = True
+
+
+# -------------------------------------------------------------------
+# LOGGING
+# -------------------------------------------------------------------
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
     },
-]
-
-WSGI_APPLICATION = 'jamia_backend.wsgi.application'
-
-# -------------------------------
-# DATABASE (SQLite)
-# -------------------------------
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    "root": {
+        "handlers": ["console"],
+        "level": "WARNING",
+    },
 }
-
-# -------------------------------
-# Password Validation
-# -------------------------------
-
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
-
-# -------------------------------
-# Internationalization
-# -------------------------------
-
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
-USE_I18N = True
-USE_TZ = True
-
-# -------------------------------
-# STATIC & MEDIA (PythonAnywhere)
-# -------------------------------
-
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / "staticfiles"
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
